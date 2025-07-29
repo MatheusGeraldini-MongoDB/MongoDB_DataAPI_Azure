@@ -1,0 +1,169 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "functionAppName": {
+            "defaultValue": "mdb-dataapi-repl",
+            "minLength": 2,
+            "type": "string",
+            "metadata": {
+                "description": "Web app name."
+            }
+        },
+        "SKU": {
+            "defaultValue": "EP1",
+            "type": "string",
+            "metadata": {
+                "description": "The SKU of App Service Plan (e.g EP1, EP2, EP3 etc.)."
+            }
+        },
+        "MongodbConnectionString": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The MongoDB Connection URI"
+            }
+        },
+         "packageUrl": {
+            "defaultValue": "https://mdbdatareplacepkg.blob.core.windows.net/mdb-datareplace-cont/mdbdataapireplace.zip?sp=r&st=2025-07-28T14:50:01Z&se=2026-12-30T23:05:01Z&spr=https&sv=2024-11-04&sr=b&sig=G9ZDTbZgM7t%2FtibHfp5C%2BAAZ36ewvLFD8EhwqiFmz40%3D",
+            "type": "string",
+            "metadata": {
+                "description": "URL of the zip package with SAS token"
+            }
+        }
+    },
+    "variables": {
+    "appServicePlanPortalName": "[format('AppServicePlan-{0}', parameters('functionAppName'))]",
+    "storageAccountName": "[toLower(concat('funcstorage', uniqueString(resourceGroup().id)))]"      
+    },
+    "resources": [
+        {
+        "type": "Microsoft.Storage/storageAccounts",
+        "apiVersion": "2023-01-01",
+        "name": "[variables('storageAccountName')]",
+        "location": "[resourceGroup().location]",
+        "sku": {
+            "name": "Standard_LRS"
+        },
+        "kind": "StorageV2",
+        "properties": {}
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-03-01",
+            "name": "[variables('appServicePlanPortalName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+            "name": "[parameters('SKU')]"
+            },
+            "properties": {
+                "reserved": true // for Linux
+            }
+        },
+        {
+            "type": "Microsoft.Insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[format('{0}-ai', parameters('functionAppName'))]",
+            "location": "[resourceGroup().location]",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Bluefield",
+                "Request_Source": "rest"
+            }
+     },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-03-01",
+            "name": "[parameters('functionAppName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+            ],
+            "kind": "functionapp,linux",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "httpsOnly": true,
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanPortalName'))]",
+                "siteConfig": {
+                    "linuxFxVersion": "PYTHON|3.11",
+                    "minTlsVersion": "1.2",
+                    "ftpsState": "FtpsOnly",
+                    "alwaysOn": true,
+                    "appSettings": [
+                        {
+                        "name": "FUNCTIONS_WORKER_RUNTIME",
+                        "value": "python"
+                        },
+                        {
+                        "name": "AzureWebJobsStorage",
+                        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2022-09-01').keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                        },
+                        {
+                        "name": "MONGODBATLAS_CLUSTER_CONNECTIONSTRING",
+                        "value": "[parameters('MongodbConnectionString')]"
+                        },
+                        {
+                        "name": "FUNCTIONS_EXTENSION_VERSION",
+                        "value": "~4"
+                        },
+                        {
+                        "name": "FUNCTIONS_WORKER_ENTRY_POINT",
+                        "value": "function_app"
+                        },
+                        // {
+                        // "name": "PYTHON_ISOLATED_WORKER_DEPENDENCY_PATH",
+                        // "value": "python"
+                        // },
+                        // {
+                        // "name": "WEBSITE_RUN_FROM_PACKAGE",
+                        // "value": "1"
+                        // },
+                        {
+                        "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+                        "value": "true"
+                        },
+                                                {
+                        "name": "ENABLE_ORYX_BUILD",
+                        "value": "true"
+                        },
+                        {
+                        "name": "APPLICATIONINSIGHTS_INSTRUMENTATIONKEY",
+                        "value": "[reference(resourceId('Microsoft.Insights/components', format('{0}-ai', parameters('functionAppName'))), '2020-02-02').InstrumentationKey]"
+                        },
+                        {
+                        "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                        "value": "[reference(resourceId('Microsoft.Insights/components', format('{0}-ai', parameters('functionAppName'))), '2020-02-02').ConnectionString]"
+                        },
+                        {
+                        "name": "APPLICATIONINSIGHTS_ROLE_NAME",
+                        "value": "[parameters('functionAppName')]"
+                        }      
+                    ]
+                },
+                "functionsExtensionVersion": "~4"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/extensions",
+            "apiVersion": "2021-02-01",
+            "name": "[format('{0}/ZipDeploy', parameters('functionAppName'))]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
+            ],
+            "properties": {
+                "packageUri": "[parameters('packageUrl')]"
+            }
+            }
+
+    ],
+    "outputs": {
+    "functionAppUrl": {
+      "type": "string",
+      "value": "[format('https://{0}.azurewebsites.net', parameters('functionAppName'))]"
+    }
+  }
+}

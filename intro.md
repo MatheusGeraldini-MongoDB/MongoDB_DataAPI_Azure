@@ -8,36 +8,64 @@ MongoDB Connector provides a simple way to connect to MongoDB Atlas via Data API
 Register for a new Atlas Account [here](https://www.mongodb.com/docs/atlas/tutorial/create-atlas-account/#register-a-new-service-account). Follow steps from 1 to 4 (Create an Atlas account, Deploy a Free cluster, Add your IP to the IP access list and Create a Database user) to set up the Atlas environment.
 
 2. **Set Up Azure Function as Atlas Data API**
+    To set up the Azure function which will host the code to act as Atlas Data APIs, we have two options - 1. Using GitHub Actions OR 2. Using Zip Deploy
 
-    i. Fork the [MongoDB repo] (https://github.com/mongodb-partners/MongoDB_DataAPI_Azure). Note the new **forked repo url**.
-    ii. Click the below **Deploy to Azure** button to have the Azure function created in your tenant.
+    Choose the GitHub actions method, if you are able to fork the current repo, have GitHub actions enabled in that repo and that you would want to add more APIs and prefer a CI/CD or DevOps way set up ot of the box.
+    If you are looking for a quick and easy way of deployment and just need the Azure function set up and substitute the Data APIs.
 
+    *Option 1: Set Up Azure function Using GitHub actions*
 
-3. **Create a Data API Key** [**here**](https://www.mongodb.com/docs/atlas/api/data-api/#2.-create-a-data-api-key)
+        i.   Fork the [MongoDB repo] (https://github.com/mongodb-partners/MongoDB_DataAPI_Azure). Note the new **forked repo url**.
+        ii.  Click the below **Deploy to Azure** button to have the Azure function created in your tenant.
 
-**Note: Save the api key generated as this is the only time you can retrieve the full private key.**
+        [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmongodb-partners%2FMongoDB_DataAPI_Azure%2Frefs%2Fheads%2Fmain%2FARM_template.json)
+
+        iii. Select or Create your Resource group which will contain the Azure function and its associated components (App Service Plan, Storage Account and App Insights). You can keep the function name and SKU as the defaults or change if you like to follow some specific standards.
+        Give the MongoDB connection url for the Cluster against which this Azure function will run. This connection string will be saved as an Environmnet variable.
+        Give your forked repo url as GitHub repo. Select *Create* and it will create the Azure function with the associated resources.
+        
+        iv.  To have GitHub actions run from your repo, get the publishing profile from your created Azure function
+        
+        ![](images/GetPublishProfile.png)
+
+        v.   Go to your GitHub repo -> Settings -> Secrets and variables -> Actions
+             Click **New Respository secret** and copy the entire value in your publishing profile to a new secret named "AZUREAPPSERVICE_PUBLISHPROFILE"
+        vi.  Make a minor change in README and **Commit Changes** to invoke GitHub actions whcih would deploy the python code to the Azure function
+             Now you should see the function available in the Functon App and the code in function_app.py deployed.
+        vii. GitHub actions tab in GitHub repo will show the steps in the deployment (including the installation of dependencies) and the result of each step.
+
+    *Option 2: Set Up Azure function Using ZipDeploy*
+        i.  Click the below **Deploy to Azure** button to have the Azure function created in your tenant.
+
+        [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmongodb-partners%2FMongoDB_DataAPI_Azure%2Frefs%2Fheads%2Fmain%2FARM_template.json)
+
+        ii. Select or Create your Resource group which will contain the Azure function and its associated components (App Service Plan, Storage Account and App Insights).
+        You can keep the function name and SKU as the defaults or change if you like to follow some specific standards. Please ** DONOT change ** the packageUrl as its the SAS url of the Storage account which has the zip taht needs to be deployed. Select *Create* and it will create the Azure function app, deploy the azure function along with the associated resources.
+
 
 ## How to get credentials
 
-Follow the steps in [Create a Data API Key](https://www.mongodb.com/docs/atlas/api/data-api/#2.-create-a-data-api-key) to create API key in Atlas and use it in the API calls
+**Get the BaseUrl and API Key**
+    i. From the Function App, select your function and click **Get function URL** . Copy the function url from beginning till before "/action" as shown in screenshot below. This is the **Base Url** you will use to invoke any of the MongoDB CRUD/ Aggregate APIs.
+    ![](images/GetFunctionUrl.png)
+    ii. Go to your Function App -> Under Functions -> App keys , Grab either the *_master* or *default* API key for your Azure function
+    This is the **API Key** you will use along with **Base Url** to create a MongoDB connection to invoke any of the MongoDB CRUD/ Aggregate APIs.
 
 ## Get started with your connector
 
-Once the Prerequisites are completed, Go to PowerAutomate-\> Data-\> Connections. Click on "New Connection" and search for MongoDB in the right Search Bar like shown below in the screenshot.
+1. Once the Prerequisites are completed, Go to PowerAutomate -> Connections. Click on "New Connection" and search for MongoDB in the Search Bar on the top right, as shown below in the screenshot.
 
-![](RackMultipart20230210-1-bnu4rc_html_73774492813969bd.png)
+![](images/MongoDBPremiumConnector.png)
 
-Click on the MongoDB connection and you would see the below popup which asks to enter the API key and the Base URL.
+2. Click on the MongoDB connection and you would see the below popup which asks to enter the API key and the Base URL.
 
-![](RackMultipart20230210-1-bnu4rc_html_101150465b95d1eb.png)
+![](images/MongoDBConnection.png)
 
-1: For the "API Key" field, enter the Data API key which you would have set up in the [Step 3](https://docs.google.com/document/d/1C5vDjCxBe_TLi6Q-J2MMK5O9hJQ49zcSU25RB6e6x60/edit#heading=h.i8rsuxkzr1i2)
+3. For the "Base Url" and the "API Key" fields, enter the values retrieved from  [How to get credentials](#how-to-get-credentials) section above
 
-2: For the "BaseUrl", enter the URL Endpoint you find in the MongoDB Atlas portal-\> [Data API](https://docs.google.com/document/d/1C5vDjCxBe_TLi6Q-J2MMK5O9hJQ49zcSU25RB6e6x60/edit#heading=h.x8ak3uxusfkl).
 
-Use one of the Data APIs for any CRUD operations against MongoDB Atlas. For complex queries, use the "Run an Aggregation Pipeline" API to use aggregation stages to massage the output from one stage to another. The flexibility and dynamism of MongoDB allows you to create rich apps and automate any time consuming processes. You keep enhancing the apps by adding more features and fields to the same collection.
+Use one of the 8 Data APIs for any CRUD operations against your MongoDB Atlas Cluster. For complex queries, use the "Run an Aggregation Pipeline" API to use aggregation stages to massage the output from one stage to another. The flexibility and dynamism of MongoDB allows you to create rich apps and automate any time consuming processes. You keep enhancing the apps by adding more features and fields to the same collection.
 
-Additionally, check [Appsource](https://appsource.microsoft.com/en-us/product/dynamics-365/mongodb.mongodb_customer_onboarding_app) for a hands-on demo of a Banking Customer Onboarding application built using Power Apps, Power Automate and MongoDB Atlas. The Github link for the same is [here.](https://github.com/mongodb-partners/MongoDB_Atlas_integration_with_Microsoft_Power_Apps_and_Power_Automate)
 
 ## Known issues and limitations
 
@@ -46,9 +74,8 @@ As MongoDB does not enforce a schema, the current connector can be used with Pow
 Restrictions applicable to MongoDB Data API does apply to the MongoDB connector also. Please refer to this [link](https://www.mongodb.com/docs/atlas/app-services/mongodb/crud-and-aggregation-apis/#aggregation-pipeline-stage-availability) to know more about the aggregation stages that are not supported under User context of Data APIs.
 
 
-Please follow this [link](https://www.mongodb.com/docs/atlas/api/data-api/#request-limitations) for the known limitations with the requests
+Please follow this [link](https://learn.microsoft.com/en-us/azure/azure-functions/functions-scale) for the known limitations with the Azure functions like time outs and other service limits for each resource plans.
 
 ## Common errors and remedies
 
-Please follow this [link](https://www.mongodb.com/docs/atlas/api/data-api-resources/#error-codes) for common error codes and this  [link](https://www.mongodb.com/docs/atlas/api/data-api/#request-traffic) for known failure due to request traffic limitations
-
+Typical API response codes apply here also. Any 4XX errors indicate issue with the request from the client. Make sure that the dataSource, database, collection are provided in a valid JSON format. Refer to this [Postman Collection] (https://grey-desert-5714.postman.co/workspace/My-Workspace~4b24f70a-aab6-4eb2-8bea-362ddc3a10c0/collection/5631262-a038ba24-f185-4671-acf2-530b3a3ddb55?action=share&source=copy-link&creator=5631262) for examples. For 5XX errors, make sure the Azure function is up and running and check its trace to further investigate.
