@@ -18,7 +18,7 @@ Register for a new Atlas Account [here](https://www.mongodb.com/docs/atlas/tutor
         i.   Fork the [MongoDB repo] (https://github.com/mongodb-partners/MongoDB_DataAPI_Azure). Note the new **forked repo url**.
         ii.  Click the below **Deploy to Azure** button to have the Azure function created in your tenant.
 
-        [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmongodb-partners%2FMongoDB_DataAPI_Azure%2Frefs%2Fheads%2Fmain%2FARM_template.json)
+            [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/)
 
         iii. Select or Create your Resource group which will contain the Azure function and its associated components (App Service Plan, Storage Account and App Insights). You can keep the function name and SKU as the defaults or change if you like to follow some specific standards.
         Give the MongoDB connection url for the Cluster against which this Azure function will run. This connection string will be saved as an Environmnet variable.
@@ -37,7 +37,7 @@ Register for a new Atlas Account [here](https://www.mongodb.com/docs/atlas/tutor
     *Option 2: Set Up Azure function Using ZipDeploy*
         i.  Click the below **Deploy to Azure** button to have the Azure function created in your tenant.
 
-        [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmongodb-partners%2FMongoDB_DataAPI_Azure%2Frefs%2Fheads%2Fmain%2FARM_template_zipdeploy.json)
+        [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/)
 
         ii. Select or Create your Resource group which will contain the Azure function and its associated components (App Service Plan, Storage Account and App Insights).
         You can keep the function name and SKU as the defaults or change if you like to follow some specific standards. Please ** DONOT change ** the packageUrl as its the SAS url of the Storage account which has the zip taht needs to be deployed. Select *Create* and it will create the Azure function app, deploy the azure function along with the associated resources.
