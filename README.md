@@ -82,3 +82,5 @@ Please follow this [link](https://learn.microsoft.com/en-us/azure/azure-function
 ## Common errors and remedies
 
 Typical API response codes apply here also. Any 4XX errors indicate issue with the request from the client. Make sure that the dataSource, database, collection are provided in a valid JSON format. Refer to this [Postman Collection](https://grey-desert-5714.postman.co/workspace/My-Workspace~4b24f70a-aab6-4eb2-8bea-362ddc3a10c0/collection/5631262-a038ba24-f185-4671-acf2-530b3a3ddb55?action=share&source=copy-link&creator=5631262) for examples. For 5XX errors, make sure the Azure function is up and running and check its trace to further investigate.
+
+Forcing actions
