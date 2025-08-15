@@ -24,7 +24,7 @@
             }
         },
          "packageUrl": {
-            "defaultValue": "https://mdbdatareplacepkg.blob.core.windows.net/mdb-datareplace-cont/mdb-dataapi-replace-aug2025-v2.zip?sp=r&st=2025-08-15T12:12:38Z&se=2026-12-30T20:27:38Z&spr=https&sv=2024-11-04&sr=b&sig=9Zw8q3%2Bu65uSGFL0aULrE0etKyt%2BjD6dYMb0xY2uEjk%3D",
+            "defaultValue": "https://mdbdatareplacepkg.blob.core.windows.net/mdb-datareplace-cont/mongodb-dataapi-repl-fcn-zipdeploy-v3.zip?sp=r&st=2025-08-15T16:01:27Z&se=2026-12-31T00:16:27Z&spr=https&sv=2024-11-04&sr=b&sig=09k2kBxjNabd1qLeUymP5sLSFDdXfMNXNSDFL1RhYRU%3D",
             "type": "string",
             "metadata": {
                 "description": "URL of the zip package with SAS token"
