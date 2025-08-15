@@ -125,7 +125,7 @@ def mongodb_dataapi_replace(req: func.HttpRequest) -> func.HttpResponse:
                 return error_response("Send a pipeline")
             docs = list(client[db][coll].aggregate(payload['pipeline']))
             for obj in docs:
-                if isinstance(obj['_id'], ObjectId):
+                if '_id' in obj and isinstance(obj['_id'], ObjectId):
                     obj['_id'] = str(obj['_id'])
             result = {"documents": docs}
 
