@@ -31,11 +31,14 @@ Register for a new Atlas Account [here](https://www.mongodb.com/docs/atlas/tutor
 
    e.   Go to your GitHub repo -> Settings -> Secrets and variables -> Actions
              Click **New Respository secret** and copy the entire value in your publishing profile to a new secret named "AZUREAPPSERVICE_PUBLISHPROFILE"
+   
    f.  Make a minor change in README and **Commit Changes** to invoke GitHub actions whcih would deploy the python code to the Azure function
              Now you should see the function available in the Functon App and the code in function_app.py deployed.
+   
    g. GitHub actions tab in GitHub repo will show the steps in the deployment (including the installation of dependencies) and the result of each step.
 
     **Option 2: Set Up Azure function Using ZipDeploy**
+   
    a.  Click the below **Deploy to Azure** button to have the Azure function created in your tenant.
 
    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmongodb-partners%2FMongoDB_DataAPI_Azure%2Frefs%2Fheads%2Fmain%2FARM_template_zipdeploy.json)
