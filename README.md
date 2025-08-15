@@ -1,5 +1,6 @@
 MongoDB Connector provides a simple way to connect to MongoDB Atlas via Data APIs hosted using Azure function in your tenant to read and write data to MongoDB Atlas collections. MongoDB connector makes it easy to perform CRUD operations and aggregations on your data in minutes and allows you to query MongoDB to build rich apps and workflows in Power Apps, Power Automate and Logic Apps. 
-**Please note that MongoDB deprecated the Atlas Data APIs from September, 2025 and thus please use this connector mechnaism to set up an Azure function and use its url and API keys instead of Atlas' ones in your Apps and Flows.**
+
+*** ***Please note that [MongoDB deprecated the Atlas Data APIs](https://www.mongodb.com/docs/atlas/app-services/data-api/data-api-deprecation/) from September, 2025 and thus please use this connector mechnaism to set up an Azure function and use its url and API keys instead of Atlas' ones in your Apps and Flows.*** ***
 
 ## Prerequisites
 
@@ -8,42 +9,48 @@ MongoDB Connector provides a simple way to connect to MongoDB Atlas via Data API
 Register for a new Atlas Account [here](https://www.mongodb.com/docs/atlas/tutorial/create-atlas-account/#register-a-new-service-account). Follow steps from 1 to 4 (Create an Atlas account, Deploy a Free cluster, Add your IP to the IP access list and Create a Database user) to set up the Atlas environment.
 
 2. **Set Up Azure Function as Atlas Data API**
-    To set up the Azure function which will host the code to act as Atlas Data APIs, we have two options - 1. Using GitHub Actions OR 2. Using Zip Deploy
+    To set up the Azure function which will host the code to act as Atlas Data APIs, we have **two** options - **1. Using GitHub Actions OR 2. Using Zip Deploy**
 
-    Choose the GitHub actions method, if you are able to fork the current repo, have GitHub actions enabled in that repo and that you would want to add more APIs and prefer a CI/CD or DevOps way set up ot of the box.
-    If you are looking for a quick and easy way of deployment and just need the Azure function set up and substitute the Data APIs.
+    Choose the GitHub actions method, if you are able to fork the current repo, can have GitHub actions enabled in that repo and that you would want to add more APIs and prefer a CI/CD or DevOps way set up ot of the box.
+    If you are looking for a quick and easy way of deployment and just need the Azure function set up to substitute the Data APIs, go with the Zip deploy option.
 
-    **Option 1: Set Up Azure function Using GitHub actions**
+    ### **Option 1: Set Up Azure function Using GitHub actions** ###
    
-   a.Fork the [MongoDB repo](https://github.com/mongodb-partners/MongoDB_DataAPI_Azure). Note the new **forked repo url**.
+   a.Fork the [MongoDB repo](https://github.com/mongodb-partners/MongoDB_DataAPI_Azure). Note the new **forked repo url**. If GitHub actions is NOT enabled by default, enable them by going to the **Settings -> Actions -> General** in your forked repo and select one of Allow actions/ resusable workflows options.
 
    b.Click the below **Deploy to Azure** button to have the Azure function created in your tenant.
 
    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmongodb-partners%2FMongoDB_DataAPI_Azure%2Frefs%2Fheads%2Fmain%2FARM_template.json)
 
    c. Select or Create your Resource group which will contain the Azure function and its associated components (App Service Plan, Storage Account and App Insights). You can keep the function name and SKU as the defaults or change if you like to follow some specific standards.
+   **We recommned that you add your Cluster name to the function app name so that its unique and easy to identify.**
+   
    Give the MongoDB connection url for the Cluster against which this Azure function will run. This connection string will be saved as an Environmnet variable.
-   Give your forked repo url as GitHub repo. Select *Create* and it will create the Azure function with the associated resources.
+   Give your forked repo url as GitHub repo. Select **Create** and it will create the Azure function with the associated resources.
+   **Note that at this stage the function app is created, env variables are populated but the actual function is not yet deployed to the function app.**
         
-   d.  To have GitHub actions run from your repo, get the publishing profile from your created Azure function
+   d.  To have GitHub actions run from your repo and deploy the function, get the publishing profile from your created Azure function.
+
+   It gets downloaded, open it in a Text editor and copy all its contents.
         
    ![](images/GetPublishProfile.png)
 
    e.   Go to your GitHub repo -> Settings -> Secrets and variables -> Actions
-             Click **New Respository secret** and copy the entire value in your publishing profile to a new secret named "AZUREAPPSERVICE_PUBLISHPROFILE"
+             Click **New Respository secret** and copy the entire value in your publishing profile to a new secret named **"AZUREAPPSERVICE_PUBLISHPROFILE"**
    
-   f.  Make a minor change in README and **Commit Changes** to invoke GitHub actions whcih would deploy the python code to the Azure function
-             Now you should see the function available in the Functon App and the code in function_app.py deployed.
+   f.  Make a minor change in README and **Commit Changes** to invoke GitHub actions which would deploy the python code to the Azure function into your function app.
+             **Now you should see the function available in the Functon App and the code in function_app.py deployed.**
    
    g. GitHub actions tab in GitHub repo will show the steps in the deployment (including the installation of dependencies) and the result of each step.
 
-    **Option 2: Set Up Azure function Using ZipDeploy**
+    ### **Option 2: Set Up Azure function Using ZipDeploy** ###
    
    a.  Click the below **Deploy to Azure** button to have the Azure function created in your tenant.
 
    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmongodb-partners%2FMongoDB_DataAPI_Azure%2Frefs%2Fheads%2Fmain%2FARM_template_zipdeploy.json)
 
-   b. Select or Create your Resource group which will contain the Azure function and its associated components (App Service Plan, Storage Account and App Insights). You can keep the function name and SKU as the defaults or change if you like to follow some specific standards. Please ** DONOT change ** the packageUrl as its the SAS url of the Storage account which has the zip taht needs to be deployed. Select *Create* and it will create the Azure function app, deploy the azure function along with the associated resources.
+   b. Select or Create your Resource group which will contain the Azure function and its associated components (App Service Plan, Storage Account and App Insights). You can keep the function name and SKU as the defaults or change if you like to follow some specific standards. We recommned that you add your Cluster name to the function app name so that its unique and easy to identify.
+    Please ** DONOT change ** the packageUrl as its the SAS url of the Storage account which has the zip that needs to be deployed. Select **Create** and it will create the Azure function app, deploy the azure function along with the associated resources.
 
 
 ## How to get credentials
