@@ -24,7 +24,7 @@
             }
         },
          "packageUrl": {
-            "defaultValue": "https://mdbdatareplacepkg.blob.core.windows.net/mdb-datareplace-cont/mdbdataapireplace.zip?sp=r&st=2025-07-28T14:50:01Z&se=2026-12-30T23:05:01Z&spr=https&sv=2024-11-04&sr=b&sig=G9ZDTbZgM7t%2FtibHfp5C%2BAAZ36ewvLFD8EhwqiFmz40%3D",
+            "defaultValue": "https://mdbdatareplacepkg.blob.core.windows.net/mdb-datareplace-cont/mdb-dataapi-replace-aug2025-v2.zip?sp=r&st=2025-08-15T12:12:38Z&se=2026-12-30T20:27:38Z&spr=https&sv=2024-11-04&sr=b&sig=9Zw8q3%2Bu65uSGFL0aULrE0etKyt%2BjD6dYMb0xY2uEjk%3D",
             "type": "string",
             "metadata": {
                 "description": "URL of the zip package with SAS token"
