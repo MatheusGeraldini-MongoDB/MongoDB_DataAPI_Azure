@@ -50,17 +50,20 @@ Register for a new Atlas Account [here](https://www.mongodb.com/docs/atlas/tutor
    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmongodb-partners%2FMongoDB_DataAPI_Azure%2Frefs%2Fheads%2Fmain%2FARM_template_zipdeploy.json)
 
    b. Select or Create your Resource group which will contain the Azure function and its associated components (App Service Plan, Storage Account and App Insights). You can keep the function name and SKU as the defaults or change if you like to follow some specific standards. We recommned that you add your Cluster name to the function app name so that its unique and easy to identify.
+
    Please ** DONOT change ** the packageUrl as its the SAS url of the Storage account which has the zip that needs to be deployed. Select **Create** and it will create the Azure function app, deploy the azure function along with the associated resources.
 
 
 ## How to get credentials
 
 **Get the BaseUrl and API Key**
-    i. From the Function App, select your function and click **Get function URL** . Copy the function url from the beginning till before "/action" as shown in screenshot below. This is the **Base Url** you will use to invoke any of the MongoDB CRUD/ Aggregate APIs.
 
-    ![](https://github.com/mongodb-partners/MongoDB_DataAPI_Azure/blob/main/images/GetFunctionUrl.png)
-    
-    ii. Go to your Function App -> Under Functions -> App keys , Grab either the *_master* or *default* API key for your Azure function
+a. From the Function App, select your function and click **Get function URL** . Copy the function url from the beginning till before "/action" as shown in screenshot below.
+    This is the **Base Url** you will use to invoke any of the MongoDB CRUD/ Aggregate APIs.
+
+![](https://github.com/mongodb-partners/MongoDB_DataAPI_Azure/blob/main/images/GetFunctionUrl.png)
+
+b. Go to your Function App -> Under Functions -> App keys , Grab either the *_master* or *default* API key for your Azure function
     This is the **API Key** you will use along with **Base Url** to create a MongoDB connection to invoke any of the MongoDB CRUD/ Aggregate APIs.
 
 ## Get started with your connector
