@@ -1,6 +1,6 @@
-MongoDB Connector provides a simple way to connect to MongoDB Atlas via Data APIs hosted using Azure function in your tenant to read and write data to MongoDB Atlas collections. MongoDB connector makes it easy to perform CRUD operations and aggregations on your data in minutes and allows you to query MongoDB to build rich apps and workflows in Power Apps, Power Automate and Logic Apps. 
+This repo details how to seamlessly set up Azure function that can be a good alternative to the MongoDB Atlas Data APIs. You can deploy the function using few clicks and use the Azure function url and api key instead of the base url and api key of Atlas Data APIs. 
 
-*** ***Please note that [MongoDB deprecated the Atlas Data APIs](https://www.mongodb.com/docs/atlas/app-services/data-api/data-api-deprecation/) from September, 2025 and thus  use this connector approach to set up an Azure function and use its url and API keys instead of Atlas' ones in your Apps and Flows.*** ***
+*** ***Please note that [MongoDB deprecated the Atlas Data APIs](https://www.mongodb.com/docs/atlas/app-services/data-api/data-api-deprecation/) from September, 2025 and thus  use this  approach to set up an Azure function and use its url and API keys instead of Atlas' ones.*** ***
 
 ## Prerequisites
 
@@ -53,41 +53,39 @@ Register for a new Atlas Account [here](https://www.mongodb.com/docs/atlas/tutor
 
    Please ** DONOT change ** the packageUrl as its the SAS url of the Storage account which has the zip that needs to be deployed. Select **Create** and it will create the Azure function app, deploy the azure function along with the associated resources.
 
-
 ## How to get credentials
 
 **Get the BaseUrl and API Key**
 
-a. From the Function App, select your function and click **Get function URL** . Copy the function url from the beginning till before "/action" as shown in screenshot below.
-    This is the **Base Url** you will use to invoke any of the MongoDB CRUD/ Aggregate APIs.
+a. From the Function App, select your function and click **Get function URL** . Copy the function url from the beginning till "/action" as shown in screenshot below. Replace {operation} with one of these depending on which API needs to be invoked. The valid operations are : findOne, find, insertOne, insertMany, deleteOne, deleteMany, updateOne, updateMany, aggregate 
+This is the **Base Url** you will use to invoke any of the MongoDB CRUD/ Aggregate APIs.
 
 ![](https://github.com/mongodb-partners/MongoDB_DataAPI_Azure/blob/main/images/GetFunctionUrl.png)
 
 b. Go to your Function App -> Under Functions -> App keys , Grab either the *_master* or *default* API key for your Azure function
     This is the **API Key** you will use along with **Base Url** to create a MongoDB connection to invoke any of the MongoDB CRUD/ Aggregate APIs.
 
-## Get started with your connector
+## Invoking the APIs using Azure function
 
-1. Once the Prerequisites are completed, Go to PowerAutomate -> Connections. Click on "New Connection" and search for MongoDB in the Search Bar on the top right, as shown below in the screenshot.
+Change your applications to use an url format like : "https://<azure_function_name>.azurewebsites.net/api/mdb_dataapi/action/{operation}" to invoke the Data APIs. Not the operation will have unique values for each of the Data API operations which are - findOne, find, insertOne, insertMany, deleteOne, deleteMany, updateOne, updateMany, aggregate. For example use "https://<azure_function_name>.azurewebsites.net/api/mdb_dataapi/action/findOne" to query the database and retrieve only one record.
 
-![](https://github.com/mongodb-partners/MongoDB_DataAPI_Azure/blob/main/images/MongoDBPremiumConnector.png)
+Also note that in the authorisation add key name as "x-functions-key" and its value should be the API key of the Azure function. This should be part of header too. Rest of the inputs like "dataSource" for clustername, "database" for database name and "collection" for collection name should be passed in the request body along with other optional parameters.
 
-2. Click on the MongoDB connection and you would see the below popup which asks to enter the API key and the Base URL.
+See below curl as an example:
 
-![](https://github.com/mongodb-partners/MongoDB_DataAPI_Azure/blob/main/images/MongoDBConnection.png)
-
-3. For the "Base Url" and the "API Key" fields, enter the values retrieved from  [How to get credentials](#how-to-get-credentials) section above
-
-
-Use one of the 8 Data APIs for any CRUD operations against your MongoDB Atlas Cluster. For complex queries, use the "Run an Aggregation Pipeline" API to use aggregation stages to massage the output from one stage to another. The flexibility and dynamism of MongoDB allows you to create rich apps and automate any time consuming processes. You keep enhancing the apps by adding more features and fields to the same collection.
-
-
+```
+    curl --location 'https://<azure function name>.azurewebsites.net/api/mdb_dataapi/action/findOne' \
+    --header 'Content-Type: application/json' \
+    --header 'x-functions-key: < Azure function API key >' \
+    --data '{
+      "dataSource": "<cluster name>",
+      "database": "< db name >",
+      "collection": "< collection name >",
+      "projection": {"<field name>":0}
+    }'
+```
+Refer to the swagger file for the structure of each of the APIs.
 ## Known issues and limitations
-
-As MongoDB does not enforce a schema, the current connector can be used with Power Automate and Logic Apps only, which supports dynamic schema for the API response, which can then be parsed using the "Parse JSON" constructs. It can be used in Power Apps by invoking a Power Automate flow for every MongoDB interaction. You can also continue to use the certified MongoDB connector from the [Microsoft Github repository](https://github.com/microsoft/PowerPlatformConnectors/tree/dev/certified-connectors/MongoDB) as a Custom connector to use it in Power Apps directly to customize the Response schema as per your MongoDB collection schema.
-
-Restrictions applicable to MongoDB Data operations does apply to the MongoDB connector also. Please refer to this [link](https://www.mongodb.com/docs/atlas/app-services/mongodb/crud-and-aggregation-apis/#aggregation-pipeline-stage-availability) to know more about the aggregation stages that are not supported under User context of Data APIs.
-
 
 Please follow this [link](https://learn.microsoft.com/en-us/azure/azure-functions/functions-scale) for the known limitations with the Azure functions like time outs and other service limits for each resource plans.
 
