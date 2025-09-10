@@ -84,7 +84,7 @@ See below curl as an example:
       "projection": {"<field name>":0}
     }'
 ```
-Refer to the swagger file for the structure of each of the APIs.
+Refer to the [swagger file](https://github.com/mongodb-partners/MongoDB_DataAPI_Azure/blob/main/MongoDB_clean_swagger.json) for the structure of each of the APIs.
 ## Known issues and limitations
 
 Please follow this [link](https://learn.microsoft.com/en-us/azure/azure-functions/functions-scale) for the known limitations with the Azure functions like time outs and other service limits for each resource plans.
