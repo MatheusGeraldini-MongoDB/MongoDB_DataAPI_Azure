@@ -57,10 +57,10 @@ Register for a new Atlas Account [here](https://www.mongodb.com/docs/atlas/tutor
 
 **Get the BaseUrl and API Key**
 
-a. From the Function App, select your function and click **Get function URL** . Copy the function url from the beginning till "/action" as shown in screenshot below. Replace {operation} with one of these depending on which API needs to be invoked. The valid operations are : findOne, find, insertOne, insertMany, deleteOne, deleteMany, updateOne, updateMany, aggregate 
+a. From the Function App, select your function and click **Get function URL** . Copy the function url from the beginning till "/action/" as shown in screenshot below. Replace {operation} with one of these depending on which API needs to be invoked. The valid operations are : findOne, find, insertOne, insertMany, deleteOne, deleteMany, updateOne, updateMany, aggregate 
 This is the **Base Url** you will use to invoke any of the MongoDB CRUD/ Aggregate APIs.
 
-![](https://github.com/mongodb-partners/MongoDB_DataAPI_Azure/blob/main/images/GetFunctionUrl.png)
+![](https://github.com/mongodb-partners/MongoDB_DataAPI_Azure/blob/1d2b33a4e8bc7c2cbc325dac9840ded28ebdb1f7/images/Get%20Function%20url.png)
 
 b. Go to your Function App -> Under Functions -> App keys , Grab either the *_master* or *default* API key for your Azure function
     This is the **API Key** you will use along with **Base Url** to create a MongoDB connection to invoke any of the MongoDB CRUD/ Aggregate APIs.
