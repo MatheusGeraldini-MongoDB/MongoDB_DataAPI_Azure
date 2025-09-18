@@ -1,6 +1,9 @@
-This repo details how to seamlessly set up Azure function that can be a good alternative to the MongoDB Atlas Data APIs. You can deploy the function using few clicks and use the Azure function url and api key instead of the base url and api key of Atlas Data APIs. 
+This repo details how to seamlessly set up Azure function as a good alternative to the MongoDB Atlas Data APIs. You can deploy the Azure Function App using few clicks and use the Azure function URL and Function App key instead of the base url and api key of Atlas Data APIs. It details the Azure function based replacement solution and alleviates the burden off developers to build the function code and manually deploy it.
 
-*** ***Please note that [MongoDB deprecated the Atlas Data APIs](https://www.mongodb.com/docs/atlas/app-services/data-api/data-api-deprecation/) from September, 2025 and thus  use this  approach to set up an Azure function and use its url and API keys instead of Atlas' ones.*** ***
+## Architecture
+ ![](https://github.com/mongodb-partners/MongoDB_DataAPI_Azure/blob/main/images/GetPublishProfile.png)
+
+The architecture depicts that when an API request is made to the Azure Function url, authorised by the API key, the corresponding MQL will be executed as specified by the “operation” in the url. An example of an Azure function URL being invoked would be : “https://<azure function name>.azurewebsites.net/api/mdb_dataapi/action/{operation}”. The url contains the “operation” which indicates which API is invoked (findOne, find, insertOne, insertMany, deleteOne, deleteMany, updateOne, updateMany, aggregate) and the corresponding python SDK code is executed using the parameters passed in the body of the request. The results of the MQL query (operation) are then passed back to the application. 
 
 ## Prerequisites
 
@@ -91,4 +94,4 @@ Please follow this [link](https://learn.microsoft.com/en-us/azure/azure-function
 
 ## Common errors and remedies
 
-Typical API response codes apply here also. Any 4XX errors indicate issue with the request from the client. Make sure that the dataSource, database, collection are provided in a valid JSON format. Refer to this [Postman Collection](https://grey-desert-5714.postman.co/workspace/My-Workspace~4b24f70a-aab6-4eb2-8bea-362ddc3a10c0/collection/5631262-a038ba24-f185-4671-acf2-530b3a3ddb55?action=share&source=copy-link&creator=5631262) for examples. For 5XX errors, make sure the Azure function is up and running and check its trace to further investigate.
+Typical API response codes apply here also. Any 4XX errors indicate issue with the request from the client. Make sure that the dataSource, database, collection are provided in a valid JSON format. Refer to this [Postman Collection]([https://grey-desert-5714.postman.co/workspace/My-Workspace~4b24f70a-aab6-4eb2-8bea-362ddc3a10c0/collection/5631262-a038ba24-f185-4671-acf2-530b3a3ddb55?action=share&source=copy-link&creator=5631262](https://www.postman.com/grey-desert-5714/workspace/mongodb-dataapis-azurefcn/collection/5631262-a038ba24-f185-4671-acf2-530b3a3ddb55?action=share&creator=5631262)) for examples. For 5XX errors, make sure the Azure function is up and running and check its trace to further investigate.
