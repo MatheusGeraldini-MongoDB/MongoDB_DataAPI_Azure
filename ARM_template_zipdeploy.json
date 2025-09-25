@@ -38,6 +38,10 @@
     "resources": [
         {
         "type": "Microsoft.Storage/storageAccounts",
+        "tags":{
+            "owner":"matheus.geraldini",
+            "keep_until": "2025-09-30"
+        },
         "apiVersion": "2023-01-01",
         "name": "[variables('storageAccountName')]",
         "location": "[resourceGroup().location]",
@@ -48,7 +52,11 @@
         "properties": {}
         },
         {
-            "type": "Microsoft.Web/serverfarms",
+        "type": "Microsoft.Web/serverfarms",
+            "tags":{
+                "owner":"matheus.geraldini",
+                "keep_until": "2025-09-30"
+            },
             "apiVersion": "2022-03-01",
             "name": "[variables('appServicePlanPortalName')]",
             "location": "[resourceGroup().location]",
@@ -61,6 +69,10 @@
         },
         {
             "type": "Microsoft.Insights/components",
+            "tags":{
+                "owner":"matheus.geraldini",
+                "keep_until": "2025-09-30"
+            },
             "apiVersion": "2020-02-02",
             "name": "[format('{0}-ai', parameters('functionAppName'))]",
             "location": "[resourceGroup().location]",
@@ -73,6 +85,10 @@
      },
         {
             "type": "Microsoft.Web/sites",
+            "tags":{
+                "owner":"matheus.geraldini",
+                "keep_until": "2025-09-30"
+            },
             "apiVersion": "2022-03-01",
             "name": "[parameters('functionAppName')]",
             "location": "[resourceGroup().location]",
@@ -148,6 +164,10 @@
         },
         {
             "type": "Microsoft.Web/sites/extensions",
+            "tags":{
+                "owner":"matheus.geraldini",
+                "keep_until": "2025-09-30"
+            },
             "apiVersion": "2021-02-01",
             "name": "[format('{0}/ZipDeploy', parameters('functionAppName'))]",
             "location": "[resourceGroup().location]",
